@@ -111,7 +111,7 @@
 		xhr.onreadystatechange = function() {
 			if (xhr.readyState == 4){
 				let json = JSON.parse(xhr.responseText);
-                if (json.track.album.image != "") {
+                if (json.track.album.image === null) {
 					currentImage.src = "./img/no-image-available.png";
 					return;
                 }
