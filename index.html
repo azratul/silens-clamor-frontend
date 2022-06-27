@@ -17,10 +17,7 @@
     <h1 id="header">Silens Clamor</h1>
     <div class="roundbox">
       <div class="mounthead">
-        <h3 class="mount">Now... /live</h3>
-        <div class="right">
-          <ul class="mountlist"></ul>
-        </div>
+          <h3 class="mount">Now... <div style="display:inline-block" id="current_artist"></div></h3>
       </div>
       <div class="mountcont">
         <div class="audioplayer">
@@ -52,78 +49,80 @@
       <a href="https://www.silensclamor.com" title="Radio Silens Clamor">Radio Silens Clamor</a>
       | Powered by Free and Open Source Software
       <div style="display: inline-block; float: right"><a target="_blank" href="https://www.scd.cl"><img src="./img/scd.png" alt="SCD Logo" /></a></div>
-	</div>
+    </div>
     <script>
-	const currentTrack = document.getElementById("current_track");
-	const currentImage = document.getElementById("current_image");
-	const url = "/live.xspf";
-	var song = "";
+    const currentArtist = document.getElementById("current_artist");
+    const currentTrack = document.getElementById("current_track");
+    const currentImage = document.getElementById("current_image");
+    const url = "/live.xspf";
+    var song = "";
 
-	function parseXML(txt){
-		if (window.DOMParser)
-		{
-			parser = new DOMParser();
-			xmlDoc = parser.parseFromString(txt, "text/xml");
-			return xmlDoc;
-		}
+    function parseXML(txt){
+        if (window.DOMParser)
+        {
+            parser = new DOMParser();
+            xmlDoc = parser.parseFromString(txt, "text/xml");
+            return xmlDoc;
+        }
 
-		xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
-		xmlDoc.async = false;
-		xmlDoc.loadXML(txt);
-		return xmlDoc;
-	}
+        xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+        xmlDoc.async = false;
+        xmlDoc.loadXML(txt);
+        return xmlDoc;
+    }
 
-	async function getCurrentTrack() {
-		const xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("MSXML2.XMLHTTP.3.0");
-		xhr.open("GET", url, true);
-		xhr.send(null);
-		xhr.onreadystatechange = function() {
-			if (xhr.readyState == 4){
-				let xml = parseXML(xhr.responseText);
-				let creator = "Unknown";
-				let title = "Unknown";
-				let obj1 = xml.getElementsByTagName("creator")[1];
-				let obj2 = xml.getElementsByTagName("title")[1];
-				if (typeof(obj1) != "undefined"){
-					creator = obj1.childNodes[0].nodeValue;
-				}
-				if (typeof(obj2) != "undefined"){
-					title = obj2.childNodes[0].nodeValue;
-				}
-				if (song != creator + " - " + title){
-					getPhoto(creator, title);
-				}
-				song = creator + " - " + title;
-				currentTrack.innerHTML = song;
-			}
-		};
-	}
-
-	async function getPhoto(artist, song){
-		if (artist == "") {
-			return;
-		}
-		let a = encodeURIComponent(artist)
-		let s = encodeURIComponent(song)
-		lfUrl = `/api/v1/info?artist=${a}&song=${s}`;
-		const xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("MSXML2.XMLHTTP.3.0");
-		xhr.open("GET", lfUrl, true);
-		xhr.send(null);
-		xhr.onreadystatechange = function() {
-			if (xhr.readyState == 4){
-				let json = JSON.parse(xhr.responseText);
-                if (json.track.album.image === null) {
-					currentImage.src = "./img/no-image-available.png";
-					return;
+    async function getCurrentTrack() {
+        const xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("MSXML2.XMLHTTP.3.0");
+        xhr.open("GET", url, true);
+        xhr.send(null);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4){
+                let xml = parseXML(xhr.responseText);
+                let creator = "Unknown";
+                let title = "Unknown";
+                let obj1 = xml.getElementsByTagName("creator")[1];
+                let obj2 = xml.getElementsByTagName("title")[1];
+                if (typeof(obj1) != "undefined"){
+                    creator = obj1.childNodes[0].nodeValue;
                 }
-				let images = json.track.album.image[2];
-				currentImage.src = images['#text'];
-			}
-		};
-	}
+                if (typeof(obj2) != "undefined"){
+                    title = obj2.childNodes[0].nodeValue;
+                }
+                if (song != creator + " - " + title){
+                    getPhoto(creator, title);
+                }
+                song = creator + " - " + title;
+                currentArtist.innerHTML = creator;
+                currentTrack.innerHTML = title;
+            }
+        };
+    }
 
-	getCurrentTrack();
-	setInterval(getCurrentTrack, 10000);
-	</script>
+    async function getPhoto(artist, song){
+        if (artist == "") {
+            return;
+        }
+        let a = encodeURIComponent(artist)
+        let s = encodeURIComponent(song)
+        lfUrl = `/api/v1/info?artist=${a}&song=${s}`;
+        const xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("MSXML2.XMLHTTP.3.0");
+        xhr.open("GET", lfUrl, true);
+        xhr.send(null);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4){
+                let json = JSON.parse(xhr.responseText);
+                if (json.track.album.image === null) {
+                    currentImage.src = "./img/no-image-available.png";
+                    return;
+                }
+                let images = json.track.album.image[2];
+                currentImage.src = images['#text'];
+            }
+        };
+    }
+
+    getCurrentTrack();
+    setInterval(getCurrentTrack, 10000);
+    </script>
   </body>
 </html>
