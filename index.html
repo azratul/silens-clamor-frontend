@@ -111,12 +111,13 @@
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4){
                 let json = JSON.parse(xhr.responseText);
-                if (json.track.album.image === null) {
-                    currentImage.src = "./img/no-image-available.png";
-                    return;
+                if (json.track.album.image !== null) {
+                    if (json.track.album.image[2]["#text"] !== "") {
+                        currentImage.src = json.track.album.image[2]["#text"];
+                        return;
+                    }
                 }
-                let images = json.track.album.image[2];
-                currentImage.src = images['#text'];
+                currentImage.src = "./img/no-image-available.png";
             }
         };
     }
