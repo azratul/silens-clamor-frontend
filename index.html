@@ -1,70 +1,142 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="UTF-8">
     <title>Stream Server - Radio Silens Clamor</title>
+    <meta name="description" content="Sintoniza Silens Clamor. La radio de los NO éxitos.">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.silensclamor.com/">
+    <meta property="og:title" content="Silens Clamor - Dark Music Radio">
+    <meta property="og:description" content="Sintoniza Silens Clamor. La radio de los NO éxitos.">
+    <meta property="og:image" content="https://www.silensclamor.com/img/logo.png">
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://www.silensclamor.com/">
+    <meta property="twitter:title" content="Silens Clamor - Dark Music Radio">
+    <meta property="twitter:description" content="Sintoniza Silens Clamor. La radio de los NO éxitos.">
+    <meta property="twitter:image" content="https://www.silensclamor.com/img/logo.png">
+
     <link rel="stylesheet" type="text/css" href="./css/style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-    <script xmlns="http://www.w3.org/1999/xhtml" async src="https://www.googletagmanager.com/gtag/js?id=G-4CH0ZPZR6Q"></script>
-    <script xmlns="http://www.w3.org/1999/xhtml">
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-4CH0ZPZR6Q');
-    </script>
+    <!-- Preload fonts specifically for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   </head>
   <body>
-    <h1 id="header">Silens Clamor</h1>
-    <div class="roundbox">
-      <div class="mounthead">
-          <h3 class="mount">Now Playing <div style="display:inline-block" id="current_artist"></div></h3>
-      </div>
-      <div class="mountcont">
-        <div class="audioplayer">
-          <audio controls="controls" preload="none">
-            <source src="https://www.silensclamor.com/live" type="application/ogg"></source>
-            Your browser does not support the audio element.
-          </audio>
+    <header>
+      <h1 id="header">Silens Clamor</h1>
+    </header>
+
+    <main>
+      <div class="player-container">
+        
+        <!-- Album Art Column -->
+        <div class="art-section">
+          <img id="current_image" alt="Album Cover" src="./img/no-image-available.png" />
         </div>
-        <table class="yellowkeys">
-          <tbody>
-            <tr>
-              <td rowspan="3">
-                <img id="current_image" alt="Album Art" src="" />
-              </td>
-              <td>Stream Name:</td>
-              <td>Live</td>
-            </tr>
-            <tr>
-              <td>Stream Description:</td>
-              <td>Alternative music</td>
-            </tr>
-            <td>Currently playing:</td>
-            <td id="current_track" class="streamstats"></td>
-          </tbody>
-        </table>
+
+        <!-- Info & Controls Column -->
+        <div class="info-section">
+            <span class="now-playing-label">Now On Air</span>
+            
+            <div class="track-info">
+                <!-- Main Artist/Title Display -->
+                <div class="info-row">
+                    <span id="current_track" class="value">Loading...</span>
+                    <span id="current_artist" class="value">Please wait</span>
+                </div>
+
+                <!-- Secondary Info -->
+                <div class="info-row">
+                    <span class="label">Album:</span>
+                    <span class="value" id="current_album">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Duration:</span>
+                    <span class="value" id="time_elapsed">00:00</span>
+                </div>
+            </div>
+
+            <!-- Custom Audio Player -->
+            <div class="custom-player-wrapper">
+                <audio id="radio-stream" preload="none">
+                  <source src="https://www.silensclamor.com/live-ogg" type="application/ogg">
+                  <source src="https://www.silensclamor.com/live" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+                
+                <div class="custom-controls">
+                    <button id="playBtn" class="control-btn play-btn" title="Play Stream">
+                        <!-- Play Icon -->
+                        <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        <!-- Pause Icon (Hidden by default) -->
+                        <svg id="pauseIcon" viewBox="0 0 24 24" fill="currentColor" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                    </button>
+                    
+                    <div class="volume-container">
+                        <button id="muteBtn" class="control-btn mute-btn" title="Mute">
+                             <svg id="volIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                             <svg id="muteIcon" viewBox="0 0 24 24" fill="currentColor" style="display:none;"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+                        </button>
+                        <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.05" value="1">
+                    </div>
+                </div>
+
+                <div class="stream-status">
+                    <span class="pulse"></span> DEAD
+                </div>
+            </div>
+        </div>
+
       </div>
-    </div>
-    <div id="footer">
-      <a href="https://www.silensclamor.com" title="Radio Silens Clamor">Radio Silens Clamor</a>
-      | Powered by Free and Open Source Software
-      <div style="display: inline-block; float: right"><a target="_blank" href="https://www.scd.cl"><img src="./img/scd.png" alt="SCD Logo" /></a></div>
-    </div>
-    <script>
+    </main>
+
+    <footer id="footer">
+      <div class="copyright">
+        &copy; <a href="https://www.silensclamor.com" title="Radio Silens Clamor">Radio Silens Clamor</a>
+        | Powered by Open Source
+      </div>
+      <div class="footer-badges">
+        <a target="_blank" href="http://www.internet-radio.com" title="Internet Radio">
+            <img src="https://www.internet-radio.com/images/internet-radio-badge.gif" alt="Internet Radio" />
+        </a>
+        <a target="_blank" href="https://www.scd.cl" title="SCD">
+            <img src="./img/scd.png" alt="SCD Logo" />
+        </a>
+      </div>
+    </footer>
+
+    <script defer>
+    function showNotification(title, body, img) {
+      if (Notification.permission === "granted") {
+        new Notification(title, { body: body, icon: img });
+      }
+    }
+
+    function requestNotificationPermission() {
+        if (Notification.permission === "default") {
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    console.log("Notification permission granted");
+                }
+            });
+        }
+    }
+
     const currentArtist = document.getElementById("current_artist");
     const currentTrack = document.getElementById("current_track");
+    const currentAlbum = document.getElementById("current_album");
     const currentImage = document.getElementById("current_image");
-    const url = "/live.xspf";
-    var song = "";
+    const url = "/live-ogg.xspf";
+    let song = "";
 
     function parseXML(txt){
-        if (window.DOMParser)
-        {
+        if (window.DOMParser) {
             parser = new DOMParser();
-            xmlDoc = parser.parseFromString(txt, "text/xml");
-            return xmlDoc;
+            return parser.parseFromString(txt, "text/xml");
         }
-
+        // Fallback for older IE (though likely not needed given modern target)
         xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
         xmlDoc.async = false;
         xmlDoc.loadXML(txt);
@@ -72,58 +144,204 @@
     }
 
     async function getCurrentTrack() {
-        const xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("MSXML2.XMLHTTP.3.0");
-        xhr.open("GET", url, true);
-        xhr.send(null);
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState == 4){
-                let xml = parseXML(xhr.responseText);
-                let creator = "Unknown";
-                let title = "Unknown";
-                let obj1 = xml.getElementsByTagName("creator")[1];
-                let obj2 = xml.getElementsByTagName("title")[1];
-                if (typeof(obj1) != "undefined"){
-                    creator = obj1.childNodes[0].nodeValue;
-                }
-                if (typeof(obj2) != "undefined"){
-                    title = obj2.childNodes[0].nodeValue;
-                }
-                if (song != creator + " - " + title){
-                    getPhoto(creator, title);
-                }
-                song = creator + " - " + title;
-                currentArtist.innerHTML = creator;
-                currentTrack.innerHTML = title;
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Network response was not ok');
+            const text = await response.text();
+            const xml = parseXML(text);
+            
+            // Safety checks for XML parsing
+            const creators = xml.getElementsByTagName("creator");
+            const titles = xml.getElementsByTagName("title");
+            
+            // XSPF usually has the playlist title first, track info second
+            let creator = (creators.length > 1) ? creators[1].textContent : (creators[0]?.textContent || "Unknown");
+            let title = (titles.length > 1) ? titles[1].textContent : (titles[0]?.textContent || "Unknown");
+
+            // Avoid redundant updates
+            if (song !== `${creator} - ${title}`) {
+                song = `${creator} - ${title}`;
+                
+                // Update text immediately
+                currentArtist.textContent = creator;
+                currentTrack.textContent = title;
+                
+                //Uptade tab title
+                document.title = `${song} | Silens Clamor`;
+
+                // Then fetch rich metadata
+                await getPhoto(creator, title);
             }
-        };
+        } catch (error) {
+            console.error("Failed to fetch current track:", error);
+        }
     }
 
-    async function getPhoto(artist, song){
-        if (artist == "") {
-            return;
-        }
-        let a = encodeURIComponent(artist)
-        let s = encodeURIComponent(song)
-        lfUrl = `/api/v1/info?artist=${a}&song=${s}`;
-        const xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("MSXML2.XMLHTTP.3.0");
-        xhr.open("GET", lfUrl, true);
-        xhr.send(null);
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState == 4){
-                let json = JSON.parse(xhr.responseText);
-                if (json.track.album.image !== null) {
-                    if (json.track.album.image[2]["#text"] !== "") {
-                        currentImage.src = json.track.album.image[2]["#text"];
-                        return;
-                    }
+    async function getPhoto(artist, song) {
+        if (!artist) return;
+
+        let a = encodeURIComponent(artist);
+        let s = encodeURIComponent(song);
+        let lfUrl = `/api/v1/info?artist=${a}&song=${s}`;
+        
+        // Fade out slightly
+        currentImage.style.opacity = 0.5;
+
+        try {
+            const response = await fetch(lfUrl);
+            const json = await response.json();
+
+            const imageUrl = json.track?.album?.image?.[3]?.["#text"] || json.track?.album?.image?.[2]?.["#text"] || "./img/no-image-available.png";
+            
+            // Create a new image object to load in background before swapping
+            const imgLoader = new Image();
+            imgLoader.onload = () => {
+                currentImage.src = imageUrl;
+                currentImage.style.opacity = 1;
+
+                // Update Background
+                if (imageUrl && !imageUrl.includes("no-image-available")) {
+                    document.body.style.backgroundImage = `var(--bg-overlay), url('${imageUrl}')`;
+                } else {
+                    document.body.style.backgroundImage = `var(--bg-overlay), url('./img/background.png')`;
                 }
+            };
+            imgLoader.onerror = () => {
                 currentImage.src = "./img/no-image-available.png";
+                currentImage.style.opacity = 1;
+                document.body.style.backgroundImage = `var(--bg-overlay), url('./img/background.png')`;
             }
-        };
+            imgLoader.src = imageUrl;
+
+            currentAlbum.textContent = json.track?.album?.title || "Unknown Album";
+            
+            // Reset timer logic if needed, or rely on server time if provided
+            // For now, keeping original duration logic
+            // duration = json.track?.duration * 1000 || 0; 
+            startTimer();
+
+            showNotification(song, artist, imageUrl);
+        } catch (error) {
+            console.error("Failed to fetch photo:", error);
+            currentImage.src = "./img/no-image-available.png";
+            currentImage.style.opacity = 1;
+        }
     }
+
+    let timerInterval;
+    function startTimer() {
+      // Clear existing timer to avoid multiples
+      if (timerInterval) cancelAnimationFrame(timerInterval);
+      
+      let startTime = Date.now(); 
+      const timeElapsedElement = document.getElementById('time_elapsed');
+
+      function updateTime() {
+        let elapsedTime = Date.now() - startTime;
+        let minutes = Math.floor(elapsedTime / 60000);
+        let seconds = Math.floor((elapsedTime % 60000) / 1000);
+
+        let formattedTime = String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+        timeElapsedElement.textContent = formattedTime;
+        
+        timerInterval = requestAnimationFrame(updateTime);
+      }
+      
+      timerInterval = requestAnimationFrame(updateTime);
+    }
+
+    /* Custom Player Logic */
+    const audio = document.getElementById('radio-stream');
+    const playBtn = document.getElementById('playBtn');
+    const playIcon = document.getElementById('playIcon');
+    const pauseIcon = document.getElementById('pauseIcon');
+    const muteBtn = document.getElementById('muteBtn');
+    const volIcon = document.getElementById('volIcon');
+    const muteIcon = document.getElementById('muteIcon');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const statusText = document.querySelector('.stream-status');
+
+    function togglePlay() {
+        if (audio.paused) {
+            // Reload to ensure we are at the live edge if it was paused for a long time
+            if(audio.src === "") {
+                audio.load(); 
+            }
+            const playPromise = audio.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    updatePlayButton(true);
+                })
+                .catch(error => {
+                    console.error("Playback failed:", error);
+                    updatePlayButton(false);
+                });
+            }
+        } else {
+            audio.pause();
+            // Optional: reset src to stop buffering if desired, but pause is usually sufficient
+            updatePlayButton(false);
+        }
+    }
+
+    function updatePlayButton(isPlaying) {
+        if (isPlaying) {
+            playIcon.style.display = 'none';
+            pauseIcon.style.display = 'block';
+            statusText.classList.add('active');
+        } else {
+            playIcon.style.display = 'block';
+            pauseIcon.style.display = 'none';
+            statusText.classList.remove('active');
+        }
+    }
+
+    function toggleMute() {
+        audio.muted = !audio.muted;
+        updateVolumeIcons();
+    }
+
+    function updateVolume() {
+        audio.volume = volumeSlider.value;
+        audio.muted = false; // Unmute if slider is moved
+        updateVolumeIcons();
+    }
+
+    function updateVolumeIcons() {
+        if (audio.muted || audio.volume === 0) {
+            volIcon.style.display = 'none';
+            muteIcon.style.display = 'block';
+            muteBtn.style.color = 'var(--text-muted)';
+        } else {
+            volIcon.style.display = 'block';
+            muteIcon.style.display = 'none';
+            muteBtn.style.color = '#fff';
+        }
+    }
+
+    playBtn.addEventListener('click', togglePlay);
+    muteBtn.addEventListener('click', toggleMute);
+    volumeSlider.addEventListener('input', updateVolume);
+
+    // Initial State Check
+    audio.addEventListener('playing', () => updatePlayButton(true));
+    audio.addEventListener('pause', () => updatePlayButton(false));
+    audio.addEventListener('ended', () => updatePlayButton(false));
+
+    // Sync initial volume with slider state
+    updateVolume();
 
     getCurrentTrack();
-    setInterval(getCurrentTrack, 10000);
+    requestNotificationPermission();
+    setInterval(getCurrentTrack, 5000);
+    </script>
+    <script defer async src="https://www.googletagmanager.com/gtag/js?id=G-4CH0ZPZR6Q"></script>
+    <script defer>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-4CH0ZPZR6Q');
     </script>
   </body>
 </html>
