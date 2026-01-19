@@ -109,13 +109,17 @@
 
     <script defer>
     function showNotification(title, body, img) {
-      if (Notification.permission === "granted") {
-        new Notification(title, { body: body, icon: img });
+      try {
+        if (typeof window.Notification !== 'undefined' && Notification.permission === "granted") {
+            new Notification(title, { body: body, icon: img });
+        }
+      } catch (e) {
+        console.error("Notification error:", e);
       }
     }
 
     function requestNotificationPermission() {
-        if (Notification.permission === "default") {
+        if (typeof window.Notification !== 'undefined' && Notification.permission === "default") {
             Notification.requestPermission().then(permission => {
                 if (permission === "granted") {
                     console.log("Notification permission granted");
